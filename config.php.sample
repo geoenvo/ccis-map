@@ -1,0 +1,421 @@
+<?php
+    date_default_timezone_set('Asia/Jakarta');
+    
+    // mysql db connection settings
+    $_dbhost = 'localhost';
+    $_dbuser = 'dbuser';
+    $_dbpass = 'dbpass';
+    $_dbname = 'ccis';
+    
+    $_dbname_mongo = 'drupal';
+    
+    /*
+        CDD
+        01-05 #9EFF79: sangat pendek (very short)
+        06-10 #F9FF0B: pendek (short)
+        11-20 #EB9608: menengah (moderate)
+        21-30 #744B00: panjang (long)
+        31-60 #FCC1C3: sangat panjang (very long)
+         > 60 #FB0400: kekeringan ekstrim (extreme drought)
+        #336D07: masih ada hujan (no drought)
+        
+        CWD
+    */
+    $_cat_lookup = array(
+       'cdd' => array(
+            'no_data' => array(
+                'hexcolor' => '#cccccc',
+                'range' => 'NA',
+                'classification' => 'data tidak tersedia (NA)',
+                'stations' => ''
+            ),
+            'no_drought' => array(
+                'hexcolor' => '#336D07',
+                'range' => '-',
+                'classification' => 'masih ada hujan (no drought)',
+                'stations' => ''
+            ),
+            'very_short' => array(
+                'hexcolor' => '#9EFF79',
+                'range' => '1 - 5',
+                'classification' => 'sangat pendek (very short)',
+                'stations' => ''
+            ),
+            'short' => array(
+                'hexcolor' => '#F9FF0B',
+                'range' => '6 - 10',
+                'classification' => 'pendek (short)',
+                'stations' => ''
+            ),
+            'moderate' => array(
+                'hexcolor' => '#EB9608',
+                'range' => '11 - 20',
+                'classification' => 'menengah (moderate)',
+                'stations' => ''
+            ),
+            'long' => array(
+                'hexcolor' => '#744B00',
+                'range' => '21 - 30',
+                'classification' => 'panjang (long)',
+                'stations' => ''
+            ),
+            'very_long' => array(
+                'hexcolor' => '#FCC1C3',
+                'range' => '31 - 60',
+                'classification' => 'sangat panjang (very long)',
+                'stations' => ''
+            ),
+            'extreme_drought' => array(
+                'hexcolor' => '#FB0400',
+                'range' => '&gt; 60',
+                'classification' => 'kekeringan ekstrim (extreme drought)',
+                'stations' => ''
+            )
+        ),
+        'cwd' => array(
+            'no_data' => array(
+                'hexcolor' => '#cccccc',
+                'range' => 'NA',
+                'classification' => 'data tidak tersedia (NA)',
+                'stations' => ''
+            ),
+            'no_drought' => array(
+                'hexcolor' => '#336D07',
+                'range' => '-',
+                'classification' => 'masih ada hujan (no drought)',
+                'stations' => ''
+            ),
+            'very_short' => array(
+                'hexcolor' => '#FB0400',
+                'range' => '1 - 5',
+                'classification' => 'sangat pendek (very short)',
+                'stations' => ''
+            ),
+            'short' => array(
+                'hexcolor' => '#FCC1C3',
+                'range' => '6 - 10',
+                'classification' => 'pendek (short)',
+                'stations' => ''
+            ),
+            'moderate' => array(
+                'hexcolor' => '#744B00',
+                'range' => '11 - 20',
+                'classification' => 'menengah (moderate)',
+                'stations' => ''
+            ),
+            'long' => array(
+                'hexcolor' => '#EB9608',
+                'range' => '21 - 30',
+                'classification' => 'panjang (long)',
+                'stations' => ''
+            ),
+            'very_long' => array(
+                'hexcolor' => '#F9FF0B',
+                'range' => '31 - 60',
+                'classification' => 'sangat panjang (very long)',
+                'stations' => ''
+            ),
+            'extreme_drought' => array(
+                'hexcolor' => '#9EFF79',
+                'range' => '&gt; 60',
+                'classification' => 'presipitasi ekstrim (extreme precipitation)',
+                'stations' => ''
+            )
+        ),
+        'ch' => array(
+            /*
+                ch gradient generated from
+                http://www.herethere.net/~samson/php/color_gradient/?cbegin=F80207&cend=0301FC&steps=30
+            */
+            /*
+            'no_data' => array(
+                'hexcolor' => '#cccccc',
+                'range' => 'NA',
+                'classification' => 'data tidak tersedia (NA)',
+                'stations' => ''
+            ),
+            '300' => array(
+                'hexcolor' => '#0A01F4',
+                'range' => '291-300mm',
+                'classification' => '',
+                'stations' => ''
+            ),
+            '290' => array(
+                'hexcolor' => '#1201EC',
+                'range' => '281-290mm',
+                'classification' => '',
+                'stations' => ''
+            ),
+            '280' => array(
+                'hexcolor' => '#1A01E4',
+                'range' => '271-280mm',
+                'classification' => '',
+                'stations' => ''
+            ),
+            '270' => array(
+                'hexcolor' => '#2201DC',
+                'range' => '261-270mm',
+                'classification' => '',
+                'stations' => ''
+            ),
+            '260' => array(
+                'hexcolor' => '#2A01D4',
+                'range' => '251-260mm',
+                'classification' => '',
+                'stations' => ''
+            ),
+            '250' => array(
+                'hexcolor' => '#3201CC',
+                'range' => '241-250mm',
+                'classification' => '',
+                'stations' => ''
+            ),
+            '240' => array(
+                'hexcolor' => '#3A01C4',
+                'range' => '231-240mm',
+                'classification' => '',
+                'stations' => ''
+            ),
+            '230' => array(
+                'hexcolor' => '#4201BC',
+                'range' => '221-230mm',
+                'classification' => '',
+                'stations' => ''
+            ),
+            '220' => array(
+                'hexcolor' => '#4A01B4',
+                'range' => '211-220mm',
+                'classification' => '',
+                'stations' => ''
+            ),
+            '210' => array(
+                'hexcolor' => '#5201AC',
+                'range' => '201-210mm',
+                'classification' => '',
+                'stations' => ''
+            ),
+            '200' => array(
+                'hexcolor' => '#5901A5',
+                'range' => '191-200mm',
+                'classification' => '',
+                'stations' => ''
+            ),
+            '190' => array(
+                'hexcolor' => '#61019D',
+                'range' => '181-190mm',
+                'classification' => '',
+                'stations' => ''
+            ),
+            '180' => array(
+                'hexcolor' => '#690195',
+                'range' => '171-180mm',
+                'classification' => '',
+                'stations' => ''
+            ),
+            '170' => array(
+                'hexcolor' => '#71018D',
+                'range' => '161-170mm',
+                'classification' => '',
+                'stations' => ''
+            ),
+            '160' => array(
+                'hexcolor' => '#790185',
+                'range' => '151-160mm',
+                'classification' => '',
+                'stations' => ''
+            ),
+            '150' => array(
+                'hexcolor' => '#81017D',
+                'range' => '141-150mm',
+                'classification' => '',
+                'stations' => ''
+            ),
+            '140' => array(
+                'hexcolor' => '#890175',
+                'range' => '131-140mm',
+                'classification' => '',
+                'stations' => ''
+            ),
+            '130' => array(
+                'hexcolor' => '#91016D',
+                'range' => '121-130mm',
+                'classification' => '',
+                'stations' => ''
+            ),
+            '120' => array(
+                'hexcolor' => '#990165',
+                'range' => '110-120mm',
+                'classification' => '',
+                'stations' => ''
+            ),
+            '110' => array(
+                'hexcolor' => '#A1015D',
+                'range' => '101-110mm',
+                'classification' => '',
+                'stations' => ''
+            ),
+            '100' => array(
+                'hexcolor' => '#A80156',
+                'range' => '91-100mm',
+                'classification' => '',
+                'stations' => ''
+            ),
+            '90' => array(
+                'hexcolor' => '#B0014E',
+                'range' => '81-90mm',
+                'classification' => '',
+                'stations' => ''
+            ),
+            '80' => array(
+                'hexcolor' => '#B80146',
+                'range' => '71-80mm',
+                'classification' => '',
+                'stations' => ''
+            ),
+            '70' => array(
+                'hexcolor' => '#C0013E',
+                'range' => '61-70mm',
+                'classification' => '',
+                'stations' => ''
+            ),
+            '60' => array(
+                'hexcolor' => '#C80136',
+                'range' => '51-60mm',
+                'classification' => '',
+                'stations' => ''
+            ),
+            '50' => array(
+                'hexcolor' => '#D0012E',
+                'range' => '41-50mm',
+                'classification' => '',
+                'stations' => ''
+            ),
+            '40' => array(
+                'hexcolor' => '#D80126',
+                'range' => '31-40mm',
+                'classification' => '',
+                'stations' => ''
+            ),
+            '30' => array(
+                'hexcolor' => '#E0011E',
+                'range' => '21-30mm',
+                'classification' => '',
+                'stations' => ''
+            ),
+            '20' => array(
+                'hexcolor' => '#E80116',
+                'range' => '11-20mm',
+                'classification' => '',
+                'stations' => ''
+            ),
+            '10' => array(
+                'hexcolor' => '#F0010E',
+                'range' => '1-10mm',
+                'classification' => '',
+                'stations' => ''
+            ),
+            '0' => array(
+                'hexcolor' => '#F80207',
+                'range' => '0mm',
+                'classification' => '',
+                'stations' => ''
+            )
+            */
+            '501' => array(
+                'hexcolor' => '#006400',
+                'range' => '> 500mm',
+                'classification' => '',
+                'stations' => ''
+            ),
+            '400-500' => array(
+                'hexcolor' => '#309230',
+                'range' => '400-500mm',
+                'classification' => '',
+                'stations' => ''
+            ),
+            '301-400' => array(
+                'hexcolor' => '#60C060',
+                'range' => '301-400mm',
+                'classification' => '',
+                'stations' => ''
+            ),
+            '201-300' => array(
+                'hexcolor' => '#90EE90',
+                'range' => '201-300mm',
+                'classification' => '',
+                'stations' => ''
+            ),
+            '151-200' => array(
+                'hexcolor' => '#C7F648',
+                'range' => '151-200mm',
+                'classification' => '',
+                'stations' => ''
+            ),
+            '101-150' => array(
+                'hexcolor' => '#FFFF00',
+                'range' => '101-150mm',
+                'classification' => '',
+                'stations' => ''
+            ),
+            '51-100' => array(
+                'hexcolor' => '#AE4D4D',
+                'range' => '51-100mm',
+                'classification' => '',
+                'stations' => ''
+            ),
+            '21-50' => array(
+                'hexcolor' => '#A23333',
+                'range' => '21-50mm',
+                'classification' => '',
+                'stations' => ''
+            ),
+            '11-20' => array(
+                'hexcolor' => '#971919',
+                'range' => '11-20mm',
+                'classification' => '',
+                'stations' => ''
+            ),
+            '0-10' => array(
+                'hexcolor' => '#8B0000',
+                'range' => '0-10mm',
+                'classification' => '',
+                'stations' => ''
+            ),
+            'no_data' => array(
+                'hexcolor' => '#cccccc',
+                'range' => 'NA',
+                'classification' => 'data tidak tersedia (NA)',
+                'stations' => ''
+            )
+        )
+    );
+    
+    // set the tooltip here
+    $_tooltip_indices = array(
+        'chtot' => '&amp;',
+        'anom20' => '',
+        'anom25' => '',
+        'anom30' => '',
+        'min' => '',
+        'avg' => '',
+        'max' => '',
+        'tgg' => '',
+        'txx' => '',
+        'tnn' => '',
+        'tgganom20' => '',
+        'tgganom25' => '',
+        'tgganom30' => '',
+        'txxanom20' => '',
+        'txxanom25' => '',
+        'txxanom30' => '',
+        'tnnanom20' => '',
+        'tnnanom25' => '',
+        'tnnanom30' => '',
+        'tgn' => '',
+        'tgx' => '',
+        'tnx' => '',
+        'tng' => '',
+        'txn' => '',
+        'txg' => '',
+    );
+?>
